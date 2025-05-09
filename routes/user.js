@@ -1,5 +1,6 @@
 const {Router} = require("express");
-const User = require('../models/user.js')
+const User = require('../models/user.js');
+const { createTokenForUser } = require("../utilities/authentication.js");
 
 const router = Router()
 
@@ -20,23 +21,40 @@ router.post('/signin', async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(401).send("Invalid email or password");
+              return res.render('signin', {
+                error: "Invalid email or password",
+                email
+            });
         }
 
         const isMatch = await user.isPasswordCorrect(password);
 
         if (!isMatch) {
-            return res.status(401).send("Invalid email or password");
+              return res.render('signin', {
+                error: "Invalid email or password",
+                email
+            });
         }
 
-        console.log("User", user);
-        return res.redirect("/");
 
-    } catch (err) {
-        console.error("Error during sign-in:", err);
-        return res.status(500).send("Server error");
+        const token = createTokenForUser(user);
+   
+
+
+        return res.cookie("token", token).redirect("/");
+
+    } catch (error){
+        console.error(error);
+        return res.render('signin', { error: "Something went wrong. Please try again." });
     }
 });
+
+
+router.get('/logout', (req, res) =>{
+    res.clearCookie('token');
+    res.redirect("/");
+
+})
 
 
 router.post('/signup', async (req, res) => {

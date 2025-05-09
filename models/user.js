@@ -1,4 +1,4 @@
-const {Schema, model, Error} = require('mongoose')
+const {Schema, model, } = require('mongoose')
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
@@ -42,10 +42,11 @@ userSchema.pre('save', async function(next) {
 
 
         try {
-            this.password = await bcrypt.hash(this.password, 10);
+            const slatRounds = 10
+            this.password = await bcrypt.hash(this.password, slatRounds);
             next();
-        } catch (err) {
-            next(err); 
+        } catch (error) {
+            next(error); 
         }
 });
 
