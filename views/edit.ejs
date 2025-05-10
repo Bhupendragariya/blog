@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('./partials/head') %>
+    <title>homepage</title>
+  </head>
+  <body>
+    <%- include('./partials/nave')%>
+    
+    <div class="container">
+        <h2>Edit Blog Post</h2>
+<form action="/blog/edit/<%= blog._id %>" method="POST">
+  <div class="mb-3">
+    <label for="title" class="form-label">Title</label>
+    <input type="text" name="title" id="title" class="form-control" value="<%= blog.title %>" required>
+  </div>
+  <div class="mb-3">
+    <label for="content" class="form-label">Content</label>
+    <textarea name="content" id="content" class="form-control" rows="6" required><%= blog.body %></textarea>
+  </div>
+  <button type="submit" class="btn btn-success">Update</button>
+</form>
+
+    </div>
+
+    <%- include('./partials/scripts') %>
+  </body>
+</html>
